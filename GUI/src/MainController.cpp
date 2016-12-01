@@ -31,19 +31,16 @@ MainController::MainController(int argc, char * argv[])
     std::string empty;
     iclnuim = Parse::get().arg(argc, argv, "-icl", empty) > -1;
 
-    std::string calibrationFile;
-    Parse::get().arg(argc, argv, "-cal", calibrationFile);
-
     Resolution::getInstance(640, 480);
 
-    if(calibrationFile.length())
+    /*if(calibrationFile.length())
     {
         loadCalibration(calibrationFile);
     }
     else
     {
         Intrinsics::getInstance(528, 528, 320, 240);
-    }
+    }*/
 
     Parse::get().arg(argc, argv, "-l", logFile);
 
@@ -68,6 +65,11 @@ MainController::MainController(int argc, char * argv[])
         }
 #endif
     }
+    
+    std::string calibrationFile;
+    Parse::get().arg(argc, argv, "-cal", calibrationFile);
+
+    loadCalibration(calibrationFile);
 
     if(Parse::get().arg(argc, argv, "-p", poseFile) > 0)
     {
@@ -158,20 +160,37 @@ MainController::~MainController()
 
 void MainController::loadCalibration(const std::string & filename)
 {
-    std::ifstream file(filename);
-    std::string line;
+    Eigen::Matrix3d intrinsics = Eigen::Matrix3d::Zero();
 
-    assert(!file.eof());
+    if(filename.length())
+    {
+        std::ifstream file(filename);
+        std::string line;
 
-    double fx, fy, cx, cy;
+        assert(!file.eof());
 
-    std::getline(file, line);
+        double fx, fy, cx, cy;
 
-    int n = sscanf(line.c_str(), "%lg %lg %lg %lg", &fx, &fy, &cx, &cy);
+        std::getline(file, line);
 
-    assert(n == 4 && "Ooops, your calibration file should contain a single line with fx fy cx cy!");
+        int n = sscanf(line.c_str(), "%lg %lg %lg %lg", &fx, &fy, &cx, &cy);
 
-    Intrinsics::getInstance(fx, fy, cx, cy);
+        assert(n == 4 && "Ooops, your calibration file should contain a single line with fx fy cx cy!");
+
+        Intrinsics::getInstance(fx, fy, cx, cy);
+    }
+    else if(logReader->getCameraIntrinsics(intrinsics))
+    {
+        double fx = intrinsics(0,0),
+               fy = intrinsics(1,1),
+               cx = intrinsics(0,2),
+               cy = intrinsics(1,2);
+        Intrinsics::getInstance(fx, fy, cx, cy);
+    }
+    else
+    {
+        Intrinsics::getInstance(528, 528, 320, 240);
+    }
 }
 
 void MainController::launch()

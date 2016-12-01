@@ -96,6 +96,23 @@ bool RealSenseInterface::getAutoWhiteBalance()
 {
   return dev->get_option(rs::option::color_enable_auto_white_balance);
 }
+
+bool RealSenseInterface::getIntrinsics(Eigen::Matrix3d & outIntrinsics)
+{
+  if(!initSuccessful) return false;
+
+  rs::intrinsics intrinsics = dev->get_stream_intrinsics (rs::stream::color);
+
+  outIntrinsics.block<3,3>(0,0) = Eigen::Matrix3d::Zero();
+  
+  outIntrinsics(0,0) = intrinsics.fx; 
+  outIntrinsics(1,1) = intrinsics.fy;
+  outIntrinsics(2,2) = 1.0f;
+  outIntrinsics(0,2) = intrinsics.ppx;
+  outIntrinsics(1,2) = intrinsics.ppy;
+
+  return true;
+}
 #else
 
 RealSenseInterface::RealSenseInterface(int inWidth,int inHeight,int inFps)

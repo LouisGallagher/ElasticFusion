@@ -41,6 +41,7 @@ class OpenNI2Interface : public CameraInterface
         bool findMode(int x, int y, int fps);
         virtual void setAutoExposure(bool value);
         virtual void setAutoWhiteBalance(bool value);
+        virtual bool getIntrinsics(Eigen::Matrix3d & outIntrinsics);
         bool getAutoExposure();
         bool getAutoWhiteBalance();
 

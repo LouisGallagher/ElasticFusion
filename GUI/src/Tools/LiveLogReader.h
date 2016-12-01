@@ -71,6 +71,13 @@ class LiveLogReader : public LogReader
 
         }
 
+        bool getCameraIntrinsics(Eigen::Matrix3d & outIntrinsics)
+        {
+            if(!cam->ok())return false;
+
+            return cam->getIntrinsics(outIntrinsics);
+        }
+
         const std::string getFile();
 
         void setAuto(bool value);

@@ -33,6 +33,8 @@
 #include <Utils/Img.h>
 #include <Utils/Resolution.h>
 
+#include <Eigen/Dense>
+
 #include "JPEGLoader.h"
 
 class LogReader
@@ -72,6 +74,8 @@ class LogReader
         virtual const std::string getFile() = 0;
 
         virtual void setAuto(bool value) = 0;
+
+        virtual bool getCameraIntrinsics(Eigen::Matrix3d & outIntrinsics) = 0;
 
         bool flipColors;
         int64_t timestamp;

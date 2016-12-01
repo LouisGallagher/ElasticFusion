@@ -24,6 +24,7 @@ public:
   bool getAutoWhiteBalance();
   virtual void setAutoExposure(bool value);
   virtual void setAutoWhiteBalance(bool value);
+  virtual bool getIntrinsics(Eigen::Matrix3d & outIntrinsics);
 
   virtual bool ok()
   {

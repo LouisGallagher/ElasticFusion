@@ -298,3 +298,8 @@ bool OpenNI2Interface::getAutoWhiteBalance()
 {
     return rgbStream.getCameraSettings()->getAutoWhiteBalanceEnabled();
 }
+
+bool OpenNI2Interface::getIntrinsics(Eigen::Matrix3d & outIntrinsics)
+{
+    return false;
+}

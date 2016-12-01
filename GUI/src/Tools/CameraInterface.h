@@ -5,6 +5,8 @@
 #include <algorithm>
 #include <map>
 
+#include <Eigen/Dense>
+
 #include "ThreadMutexObject.h"
 
 class CameraInterface
@@ -21,4 +23,5 @@ class CameraInterface
 
       virtual void setAutoExposure(bool value) = 0;
       virtual void setAutoWhiteBalance(bool value) = 0;
+      virtual bool getIntrinsics(Eigen::Matrix3d & outIntrinsics) = 0;
 };

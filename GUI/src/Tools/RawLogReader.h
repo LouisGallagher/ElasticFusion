@@ -57,6 +57,11 @@ class RawLogReader : public LogReader
 
         void setAuto(bool value);
 
+        bool getCameraIntrinsics(Eigen::Matrix3d & outIntrinsics)
+        {
+            return false;
+        }
+
         std::stack<int> filePointers;
 
     private:
