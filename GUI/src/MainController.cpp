@@ -46,7 +46,16 @@ MainController::MainController(int argc, char * argv[])
 
     if(logFile.length())
     {
-        logReader = new RawLogReader(logFile, Parse::get().arg(argc, argv, "-f", empty) > -1);
+        std::string ext = "lcm";
+        
+        if(logFile.compare(logFile.length() - ext.length(), ext.length(), ext) == 0)
+        {   
+            logReader = new LcmLogReader(logFile);
+        }
+        else
+        {
+            logReader = new RawLogReader(logFile, Parse::get().arg(argc, argv, "-f", empty) > -1);
+        }
     }
     else
     {
@@ -198,7 +207,7 @@ void MainController::launch()
     while(good)
     {
         if(eFusion)
-        {
+        {   
             run();
         }
 
@@ -264,7 +273,7 @@ void MainController::run()
                 }
                 else
                 {
-                    logReader->getNext();
+                   logReader->getNext();
                 }
                 TOCK("LogRead");
 

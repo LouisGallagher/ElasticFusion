@@ -24,6 +24,12 @@ find_package(CUDA REQUIRED)
 find_package(OpenNI2 REQUIRED)
 find_package(efusion REQUIRED)
 find_package(LibRealSense QUIET)
+find_package(PkgConfig REQUIRED)
+
+pkg_check_modules(LCM REQUIRED lcm)
+
+file(GLOB lcmtypes Tools/lcmtypes/*.lcm)
+execute_process(COMMAND lcm-gen -x ${lcmtypes} --cpp-hpath ${CMAKE_CURRENT_SOURCE_DIR}/Tools/lcmtypes/)
 
 if(LIBREALSENSE_FOUND)
   message(STATUS "librealsense found: ${REALSENSE_FOUND}")
@@ -40,6 +46,7 @@ include_directories(${Pangolin_INCLUDE_DIRS})
 include_directories(${CUDA_INCLUDE_DIRS})
 include_directories(${EFUSION_INCLUDE_DIR})
 include_directories(${OPENNI2_INCLUDE_DIR})
+include_directories(${LCM_INCLUDE_DIRS})
 
 if(WITH_REALSENSE)
   include_directories(${LIBREALSENSE_INCLUDE_DIRS})
@@ -83,6 +90,7 @@ target_link_libraries(ElasticFusion
                       ${EXTRA_LIBS}
                       ${EFUSION_LIBRARY}
                       ${OPENNI2_LIBRARY}
+                      ${LCM_LIBRARIES}
 )
 
 INSTALL(TARGETS ElasticFusion
