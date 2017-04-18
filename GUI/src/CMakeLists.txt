@@ -29,6 +29,12 @@ find_package(LibRealSense QUIET)
 find_package(SuiteSparse REQUIRED)
 find_package(PkgConfig REQUIRED)
 find_package(LibRealSense QUIET)
+find_package(PkgConfig REQUIRED)
+
+pkg_check_modules(LCM REQUIRED lcm)
+
+file(GLOB lcmtypes Tools/lcmtypes/*.lcm)
+execute_process(COMMAND lcm-gen -x ${lcmtypes} --cpp-hpath ${CMAKE_CURRENT_SOURCE_DIR}/Tools/lcmtypes/)
 
 pkg_check_modules(LCM REQUIRED lcm)
 
