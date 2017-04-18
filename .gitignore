@@ -3,4 +3,4 @@ deps/
 .project
 .cproject
 *.user
-GUI/Tools/lcmtypes/eflcm
+GUI/Tools/lcmtypes/eflcm/
