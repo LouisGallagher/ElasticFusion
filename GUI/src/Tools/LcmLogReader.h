@@ -71,7 +71,13 @@ class LcmLogReader : public LogReader
         	return false;
         }
 
-        void rewind(){}
+        void rewind()
+        {
+        	
+        	lf.seekToTimestamp(0);
+        	done = false;
+
+        }
 
         void getBack(){}
 
