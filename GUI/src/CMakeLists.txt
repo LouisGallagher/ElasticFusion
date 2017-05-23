@@ -28,8 +28,6 @@ find_package(efusion REQUIRED)
 find_package(LibRealSense QUIET)
 find_package(SuiteSparse REQUIRED)
 find_package(PkgConfig REQUIRED)
-find_package(LibRealSense QUIET)
-find_package(PkgConfig REQUIRED)
 
 pkg_check_modules(LCM REQUIRED lcm)
 

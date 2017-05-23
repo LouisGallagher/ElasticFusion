@@ -145,4 +145,9 @@ bool RealSenseInterface::getAutoWhiteBalance()
 {
   return false;
 }
+
+bool RealSenseInterface::getIntrinsics(Eigen::Matrix3d & outIntrinsics)
+{
+  return false;
+}
 #endif
