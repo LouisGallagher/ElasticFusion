@@ -200,19 +200,6 @@ void MainController::loadCalibration(const std::string & filename)
     {
         Intrinsics::getInstance(528, 528, 320, 240);
     }
-    }
-    else if(logReader->getCameraIntrinsics(intrinsics))
-    {
-        double fx = intrinsics(0,0),
-               fy = intrinsics(1,1),
-               cx = intrinsics(0,2),
-               cy = intrinsics(1,2);
-        Intrinsics::getInstance(fx, fy, cx, cy);
-    }
-    else
-    {
-        Intrinsics::getInstance(528, 528, 320, 240);
-    }
 }
 
 void MainController::launch()
