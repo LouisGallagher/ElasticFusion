@@ -817,6 +817,11 @@ void ElasticFusion::savePly()
     delete [] mapData;
 }
 
+void ElasticFusion::saveTrajectory()
+{
+  
+}
+
 Eigen::Vector3f ElasticFusion::rodrigues2(const Eigen::Matrix3f& matrix)
 {
     Eigen::JacobiSVD<Eigen::Matrix3f> svd(matrix, Eigen::ComputeFullV | Eigen::ComputeFullU);

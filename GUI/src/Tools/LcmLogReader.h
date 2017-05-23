@@ -23,15 +23,20 @@ class LcmLogReader : public LogReader
 
 			depthReadBuffer = new unsigned char[Resolution::getInstance().numPixels() * 2];
 			imageReadBuffer = new unsigned char[Resolution::getInstance().numPixels() * 3];
+			decompressionBufferDepth = new Bytef[Resolution::getInstance().numPixels() * 2];
+			decompressionBufferImage =  new Bytef[Resolution::getInstance().numPixels() * 3];
 		}
 		virtual ~LcmLogReader()
 		{
 			delete [] depthReadBuffer;
 			delete [] imageReadBuffer;
+			delete [] decompressionBufferDepth;
+			delete [] decompressionBufferImage;
 		}
 
 		void getNext()
 		{
+
 			const lcm::LogEvent * le = lf.readNextEvent();
 
 			if(le == NULL)
@@ -46,11 +51,24 @@ class LcmLogReader : public LogReader
 				return;
 			}
 
-			memcpy(&depthReadBuffer[0], f.depth.data(), f.depthSize);
-			memcpy(&imageReadBuffer[0], f.image.data(), f.imageSize);
+			if(f.compressed)
+			{
+				unsigned long decompressedDepthSize = Resolution::getInstance().numPixels() * 2;
+				uncompress(&decompressionBufferDepth[0], (unsigned long*)&decompressedDepthSize, (const Bytef*)(f.depth.data()), f.depthSize);		
 
-			depth = (unsigned short*)depthReadBuffer;
-			rgb = (unsigned char*)imageReadBuffer;
+				jpeg.readData((unsigned char *)f.image.data(), f.imageSize, (unsigned char *)&decompressionBufferImage[0]);
+
+				memcpy(depthReadBuffer, (unsigned short *)decompressionBufferDepth, Resolution::getInstance().numPixels() * 2);
+				memcpy(imageReadBuffer, (unsigned char *)decompressionBufferImage, Resolution::getInstance().numPixels() * 3);
+			}
+			else
+			{
+				memcpy(depthReadBuffer, f.depth.data(), f.depthSize);
+				memcpy(imageReadBuffer, f.image.data(), f.imageSize);
+			}
+
+			depth = (unsigned short *) depthReadBuffer;
+			rgb = (unsigned char *) imageReadBuffer;
 
 			timestamp = f.timestamp;
 			currentFrame++;

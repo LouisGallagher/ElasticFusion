@@ -600,6 +600,7 @@ void MainController::run()
         if(pangolin::Pushed(*gui->save))
         {
             eFusion->savePly();
+            eFusion->saveTrajectory();
         }
 
         TOCK("GUI");

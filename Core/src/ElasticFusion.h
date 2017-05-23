@@ -248,6 +248,11 @@ class ElasticFusion
         EFUSION_API void savePly();
 
         /**
+         *Saves out a .freiberg file of the current camera trajectory
+         */
+         EFUSION_API void saveTrajectory();
+
+        /**
          * Renders a normalised view of the input raw depth for displaying as an OpenGL texture
          * (this is stored under textures[GPUTexture::DEPTH_NORM]
          * @param minVal minimum depth value to render
