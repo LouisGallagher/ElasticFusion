@@ -429,7 +429,32 @@ void MainController::run()
         {
             glColor3f(1, 0, 1);
         }
+
         gui->drawFrustum(pose);
+        
+        for(int i = 0; i < eFusion->matchedViews().size(); i++)
+        {
+            Eigen::Matrix3f rot1 = eFusion->matchedViews()[i].first.topLeftCorner(3, 3);
+            Eigen::Matrix3f rot2 = eFusion->matchedViews()[i].second.topLeftCorner(3, 3);
+            Eigen::Quaternionf quat1(rot1);
+            Eigen::Quaternionf quat2(rot2);
+            Eigen::Vector3f forwardVector(0, 0, 1);
+            Eigen::Vector3f forward1 = (quat1 * forwardVector).normalized();
+            Eigen::Vector3f forward2 = (quat2 * forwardVector).normalized();
+            Eigen::Vector3f eye1(eFusion->matchedViews()[i].first(0, 3), eFusion->matchedViews()[i].first(1, 3), eFusion->matchedViews()[i].first(2, 3));
+            Eigen::Vector3f eye2(eFusion->matchedViews()[i].second(0, 3), eFusion->matchedViews()[i].second(1, 3), eFusion->matchedViews()[i].second(2, 3));
+
+            glColor3f(0,1,0);
+            gui->drawFrustum(eFusion->matchedViews()[i].first);
+            pangolin::glDrawLine(eye1(0), eye1(1), eye1(2), (eye1 + forward1)(0), (eye1 + forward1)(1), (eye1 + forward1)(2));
+            glColor3f(1,0,0);
+            gui->drawFrustum(eFusion->matchedViews()[i].second);            
+            pangolin::glDrawLine(eye2(0), eye2(1), eye2(2), (eye2 + forward2)(0), (eye2 + forward2)(1), (eye2 + forward2)(2)); 
+            glColor3f(1,1,0);
+            pangolin::glDrawLine(eye2(0), eye2(1), eye2(2), eye1(0), eye1(1), eye1(2));
+
+        }
+        
         glColor3f(1, 1, 1);
 
         if(gui->drawFerns->Get())
@@ -502,8 +527,20 @@ void MainController::run()
                 {
                     pangolin::glDrawLine(poseMatches.at(i).constraints.at(j).sourcePoint(0), poseMatches.at(i).constraints.at(j).sourcePoint(1), poseMatches.at(i).constraints.at(j).sourcePoint(2),
                                          poseMatches.at(i).constraints.at(j).targetPoint(0), poseMatches.at(i).constraints.at(j).targetPoint(1), poseMatches.at(i).constraints.at(j).targetPoint(2));
+          
+                }
+                if(poseMatches.at(i).fern)
+                {
+                    glColor3f(1, 0, 0);
+                    gui->drawFrustum(poseMatches.at(i).first);//fern
+                    glColor3f(0, 1, 0);
+                    gui->drawFrustum(poseMatches.at(i).second);//model prediction
+                    glColor3f(255,69,0);
+                    pangolin::glDrawLine(poseMatches.at(i).first(0,3), poseMatches.at(i).first(1,3), poseMatches.at(i).first(2,3),
+                                    poseMatches.at(i).second(0,3), poseMatches.at(i).second(1,3), poseMatches.at(i).second(2,3));
                 }
             }
+
         }
         glColor3f(1, 1, 1);
 
@@ -592,4 +629,14 @@ void MainController::run()
 
         TOCK("GUI");
     }
+
+    std::cout << "fern matching metrics" << "(" << eFusion->matchedViews().size() << ")" << std::endl;    
+    std::cout << "euclidean distance metrics (in __): " << std::endl;
+    std::cout << "\t-average: " << eFusion->avgEuclideanDistBtwMatchedViews() << std::endl;
+    std::cout << "\t-max: " << eFusion->maxEuclideanDistBtwMatchedViews() << std::endl;
+    std::cout << "\t-min: " << eFusion->minEuclideanDistBtwMatchedViews() << std::endl;
+    std::cout << "angular viewing difference metrics (in degrees):" << std::endl;
+    std::cout << "\t-average: " << eFusion->avgAngDistBtwMatchedViews() << std::endl;
+    std::cout << "\t-max: " << eFusion->maxAngDistBtwMatchedViews() << std::endl;
+    std::cout << "\t-min: " << eFusion->minAngDistBtwMatchedViews() << std::endl;
 }

@@ -24,6 +24,8 @@ const std::string GPUTexture::DEPTH_FILTERED = "DEPTH_FILTERED";
 const std::string GPUTexture::DEPTH_METRIC = "DEPTH_METRIC";
 const std::string GPUTexture::DEPTH_METRIC_FILTERED = "DEPTH_METRIC_FILTERED";
 const std::string GPUTexture::DEPTH_NORM = "DEPTH_NORM";
+const std::string GPUTexture::MATCHED_DEPTH = "MATCHED_DEPTH";
+const std::string GPUTexture::MATCHED_RGB = "MATCHED_RGB";
 
 GPUTexture::GPUTexture(const int width,
                        const int height,

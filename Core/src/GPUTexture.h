@@ -39,7 +39,7 @@ class GPUTexture
 
         virtual ~GPUTexture();
 
-        EFUSION_API static const std::string RGB, DEPTH_RAW, DEPTH_FILTERED, DEPTH_METRIC, DEPTH_METRIC_FILTERED, DEPTH_NORM;
+        EFUSION_API static const std::string RGB, DEPTH_RAW, DEPTH_FILTERED, DEPTH_METRIC, DEPTH_METRIC_FILTERED, DEPTH_NORM, MATCHED_DEPTH, MATCHED_RGB;
 
         pangolin::GlTexture * texture;
 

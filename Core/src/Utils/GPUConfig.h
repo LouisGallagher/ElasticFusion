@@ -120,6 +120,12 @@ class GPUConfig
             rgbResMap["GeForce GTX 960M"] = std::pair<int, int>(128, 80);
             so3StepMap["GeForce GTX 960M"] = std::pair<int, int>(64, 48);
 
+
+            icpStepMap["GeForce GTX 1080 Ti"] = std::pair<int, int>(256, 112);
+            rgbStepMap["GeForce GTX 1080 Ti"] = std::pair<int, int>(80, 128);
+            rgbResMap["GeForce GTX 1080 Ti"] = std::pair<int, int>(256, 224);
+            so3StepMap["GeForce GTX 1080 Ti"] = std::pair<int, int>(448, 48);
+
             if(icpStepMap.find(dev) == icpStepMap.end())
             {
                 std::stringstream strs;

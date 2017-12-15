@@ -79,6 +79,9 @@ class MainController
         bool resetButton;
 
         Resize * resizeStream;
+
+        std::vector<float> matchedViewAngularDifferences;
+        std::vector<float> matchedViewTranslationalDistances;
 };
 
 #endif /* MAINCONTROLLER_H_ */

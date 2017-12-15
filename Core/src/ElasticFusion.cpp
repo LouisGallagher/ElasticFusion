@@ -198,6 +198,21 @@ void ElasticFusion::createTextures()
                                                       GL_LUMINANCE,
                                                       GL_FLOAT,
                                                       true);
+
+    textures[GPUTexture::MATCHED_DEPTH] = new GPUTexture(Resolution::getInstance().width(),
+                                                      Resolution::getInstance().height(),
+                                                      GL_LUMINANCE,
+                                                      GL_LUMINANCE,
+                                                      GL_FLOAT,
+                                                      true);
+
+    textures[GPUTexture::MATCHED_RGB] = new GPUTexture(Resolution::getInstance().width(),
+                                               Resolution::getInstance().height(),
+                                               GL_RGBA,
+                                               GL_RGB,
+                                               GL_UNSIGNED_BYTE,
+                                               true,
+                                               true);
 }
 
 void ElasticFusion::createCompute()
@@ -422,6 +437,27 @@ void ElasticFusion::processFrame(const unsigned char * rgb,
                                            &fillIn.imageTexture,
                                            tick,
                                            lost);
+            if(ferns.lastClosest != -1)
+            {
+                Eigen::Vector3f forwardVector(0, 0, 1);
+
+                Eigen::Matrix3f currRot = currPose.topLeftCorner(3, 3);
+                Eigen::Quaternionf currQuat(currRot);
+            
+                Eigen::Matrix3f matchedRot =  ferns.frames.at(ferns.lastClosest)->pose.topLeftCorner(3, 3);
+                Eigen::Quaternionf matchedQuat(matchedRot );
+
+                Eigen::Vector3f viewDir1 = (currQuat * forwardVector).normalized();
+                Eigen::Vector3f viewDir2 = (matchedQuat * forwardVector).normalized();
+                float theta = acos((viewDir1.dot(viewDir2))/(viewDir1.norm() * viewDir2.norm())) * 180.0f / (float)M_PI;
+                float d = (viewDir1 - viewDir2).norm();
+
+
+                matchedViewAngDiffs.push_back(theta);
+                matchedViewEuclideanDists.push_back(d);
+                m_matchedViews.push_back({currPose, ferns.frames.at(ferns.lastClosest)->pose});
+            }
+            
             TOCK("Ferns::findFrame");
         }
 
@@ -461,6 +497,7 @@ void ElasticFusion::processFrame(const unsigned char * rgb,
                     fernDeforms += rawGraph.size() > 0;
 
                     fernAccepted = true;
+
                 }
             }
         }
@@ -713,6 +750,11 @@ void ElasticFusion::normaliseDepth(const float & minVal, const float & maxVal)
     uniforms.push_back(Uniform("minVal", minVal * 1000.f));
 
     computePacks[ComputePack::NORM]->compute(textures[GPUTexture::DEPTH_RAW]->texture, &uniforms);
+}
+
+void ElasticFusion::matchedView(Ferns::Frame & f)
+{
+
 }
 
 void ElasticFusion::savePly()

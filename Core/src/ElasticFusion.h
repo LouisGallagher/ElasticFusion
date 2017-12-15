@@ -260,6 +260,103 @@ class ElasticFusion
          */
         EFUSION_API void normaliseDepth(const float & minVal, const float & maxVal);
 
+        /**
+        * Renders the depth and colour view between the live view and the fern it matched with
+        */
+        EFUSION_API void matchedView(Ferns::Frame & f);
+
+        EFUSION_API float avgAngDistBtwMatchedViews()
+        {
+            if(!matchedViewAngDiffs.size()) return -1.0f;
+            
+            float sum = 0;
+            for(int i = 0; i < matchedViewAngDiffs.size(); i++)
+            {
+                sum += matchedViewAngDiffs[i];
+            }
+            return sum / (float)matchedViewAngDiffs.size();
+        }
+
+        EFUSION_API float maxAngDistBtwMatchedViews()
+        {
+            if(!matchedViewAngDiffs.size())return -1.0f;
+            
+            float max = matchedViewEuclideanDists[0];
+
+            for(int i = 1; i < matchedViewAngDiffs.size(); i++)
+            {
+                if(matchedViewAngDiffs[i] > max)
+                {
+                    max = matchedViewAngDiffs[i];
+                }
+            }
+            return max;
+        }
+        EFUSION_API float minAngDistBtwMatchedViews()
+        {
+            if(!matchedViewAngDiffs.size())return -1.0f;
+            
+            float min = matchedViewEuclideanDists[0];
+
+            for(int i = 1; i < matchedViewAngDiffs.size(); i++)
+            {
+                if(matchedViewAngDiffs[i] < min)
+                {
+                    min = matchedViewAngDiffs[i];
+                }
+            }
+            return min;
+        }
+
+        EFUSION_API float avgEuclideanDistBtwMatchedViews()
+        {
+            if(!matchedViewEuclideanDists.size()) return -1.0f;
+            
+            float sum = 0.0f;
+            for(int i  = 0; i < matchedViewEuclideanDists.size(); i++)
+            {
+                sum += matchedViewEuclideanDists[i];
+            }
+            return sum / (float)matchedViewEuclideanDists.size();
+        }
+
+        EFUSION_API float maxEuclideanDistBtwMatchedViews()
+        {
+            if(!matchedViewEuclideanDists.size())return -1.0f;
+            
+            float max = matchedViewEuclideanDists[0];
+
+            for(int i = 1; i < matchedViewEuclideanDists.size(); i++)
+            {
+                if(matchedViewEuclideanDists[i] > max)
+                {
+                    max = matchedViewEuclideanDists[i];
+                }
+            }
+            return max;
+        }
+
+        EFUSION_API float minEuclideanDistBtwMatchedViews()
+        {
+            if(!matchedViewEuclideanDists.size())return -1.0f;
+            
+            float min = matchedViewEuclideanDists[0];
+
+            for(int i = 1; i < matchedViewEuclideanDists.size(); i++)
+            {
+                if(matchedViewEuclideanDists[i] < min)
+                {
+                    min = matchedViewEuclideanDists[i];
+                }
+            }
+            return min;
+        }
+
+        EFUSION_API std::vector<std::pair<Eigen::Matrix4f, Eigen::Matrix4f> >& matchedViews()
+        {
+            return m_matchedViews;
+        }
+
         //Here be dragons
     private:
         IndexMap indexMap;
@@ -330,6 +427,10 @@ class ElasticFusion
         bool so3;
         bool frameToFrameRGB;
         float depthCutoff;
+
+        std::vector<float> matchedViewAngDiffs;
+        std::vector<float> matchedViewEuclideanDists;
+        std::vector<std::pair<Eigen::Matrix4f, Eigen::Matrix4f> > m_matchedViews;
 };
 
 #endif /* ELASTICFUSION_H_ */
